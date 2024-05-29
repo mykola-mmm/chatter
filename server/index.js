@@ -2,10 +2,11 @@ import express from "express";
 
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import { registerValidation } from "./validations/auth.js";
+import { registerValidation, loginValidation } from "./validations/validations.js";
 import checkAuth from "./utils/checkAuth.js";
 
-import * as UserserController from "./controllers/userController.js";
+import * as UserController from "./controllers/userController.js";
+import * as PostController from "./controllers/postController.js";
 
 dotenv.config();
 
@@ -19,16 +20,22 @@ const app = express();
 
 app.use(express.json());
 
-app.post("/auth/login", UserserController.login);
+app.post("/auth/login", loginValidation, UserController.login);
 
-app.post("/auth/register", registerValidation, UserserController.register);
+app.post("/auth/register", registerValidation, UserController.register);
 
-app.get("/auth/me", checkAuth, UserserController.getMe);
+app.get("/auth/me", checkAuth, UserController.getMe);
 
-app.get("/", (req, res) => {
-    res.send("Hello World");
-    console.log("Hello World from console");
-});
+// app.get("/posts", PostController.getAll);
+// app.get("/posts/:id", PostController.getOne);
+app.post("/posts", PostController.create);
+// app.delete("/posts/:id", PostController.remove);
+// app.patch("/posts", PostController.update);
+
+// app.get("/", (req, res) => {
+//     res.send("Hello World");
+//     console.log("Hello World from console");
+// });
 
 app.listen(3000, (err) => {
   if (err) {

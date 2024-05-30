@@ -3,12 +3,25 @@ import PostModel from "../models/post.js";
 
 export const getAll = async (req, res) => {
   try {
-    const posts = await PostModel.find().populate("user", "fullName").exec();
+    const posts = await PostModel.find().populate("user", "fullName avatarUrl").exec();
     res.json(posts);
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Error fetching the posts",
+    });
+  }
+};
+
+export const getLastTags = async (req, res) => {
+  try {
+    const posts = await PostModel.find().limit(5).exec();
+    const tags = posts.map(obj => obj.tags).flat().filter((value, index, array) => {return array.indexOf(value) === index}).slice(0, 5);
+    res.json(tags);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Error fetching the tags",
     });
   }
 };
@@ -26,7 +39,7 @@ export const getOne = async (req, res) => {
       {
         returnDocument: "after",
       }
-    );
+    ).populate("user", "fullName avatarUrl");
 
     if (!doc) {
       return res.status(404).json({

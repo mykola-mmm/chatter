@@ -4,13 +4,10 @@ import axios from '../../axios';
 
 export const fetchAuth = createAsyncThunk('auth/fetchAuth', async (params) => {
     console.log("auth login")
-    const {data} = await axios.get('auth/login', params);
+    const {data} = await axios.post('/auth/login', params);
+    console.log(data)
     return data;
 })
-// export const fetchAuth = createAsyncThunk('auth/fetchAuth', async (params) => {
-//     const {data} = await axios.get('/auth/login', params);
-//     return data;
-// })
 
 const initialState = {
     data: null,
@@ -36,4 +33,5 @@ const authSlise = createSlice({
     }
 });
 
+export const selectIsAuth = state => Boolean(state.auth.data);
 export const authReducer = authSlise.reducer;
